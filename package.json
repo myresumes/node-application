@@ -1,0 +1,19 @@
+{
+  "name": "node-application",
+  "version": "1.0.0",
+  "description": "node application using express, sequelize and mysql",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myresumes/node-application.git"
+  },
+  "author": "Prateek Kumar Srivastava",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/myresumes/node-application/issues"
+  },
+  "homepage": "https://github.com/myresumes/node-application#readme"
+}
