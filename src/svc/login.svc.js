@@ -1,32 +1,46 @@
 'use strict'
-module.exports = (config, database, _) => {
-
-    return (req) => {
-        if (_.has(req, 'body')) {
-            if (_.has(req.body, 'userName') && _.has(req.body, 'password')) {
-                fetchUserInfo(req.body, database).then((success) => {
-                    console.log(success);
-                });
-            } else {
-                return config.Promise.reject({ status: 400, error: { msg: 'Invalid request' } });
+module.exports = (config, database, _, request) => {
+    return new config.Promise(function(resolve, reject) {
+        validate(request).then((resp) => {
+            return request;
+        }).then((resp) => {
+            return fetchValuesFromDb(resp.body);
+        }).then((dbResp) => {
+            if (dbResp) {
+                console.log('test');
+                resolve({ status: 200, msg: 'login success', data: request.body });
             }
-        } else {
-            return config.Promise.reject({ status: 400, error: { msg: 'Invalid request' } });
-        }
-        return config.Promise.resolve({ status: 200, data: req.body });
-    };
-    //req.body.secretString = config.secret;
-    //return config.Promise.reject({ status: 200, data: config.secret });
+            resolve(dbResp);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
 
-    function fetchUserInfo(request, database) {
+    function fetchValuesFromDb(req) {
         return database.user.find({
             where: {
-                email: request.userName,
-                password: request.password
+                email: req.userName,
+                password: req.password
             }
         }).then((usr) => {
-            console.log('usr', usr);
-            return usr;
-        })
+            console.log('second ')
+            if (usr) {
+                return usr;
+            }
+            return { error: 'User not found !!!' };
+        }).catch((error) => {
+            throw error;
+            return { error: error };
+        });
+    }
+
+
+    function validate(requestEntity) {
+        return new config.Promise((resolve, reject) => {
+            if (_.has(requestEntity, 'body') && _.has(requestEntity.body, 'userName') && _.has(requestEntity.body, 'password')) {
+                resolve(requestEntity.body);
+            }
+            reject({ isError: true, msg: 'Invalid Input' });
+        });
     }
 };

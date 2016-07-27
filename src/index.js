@@ -3,7 +3,7 @@ var promise = require('bluebird'),
     server = require('./utils/create-server.js'),
     config = require('./config/config.json'),
     svr = server(config)();
-console.log(config.port);
+
 var config, server;
 
 process.on('SIGINT', function() {
